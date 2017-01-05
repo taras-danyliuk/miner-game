@@ -1,0 +1,83 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+.hidden {
+    display: none !important;
+}
+
+
+
+.game-wrapper {
+    position: relative;
+}
+.end-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.3);
+    width: 520px;
+    margin: 0 auto;
+}
+.end-message {
+    color: white;
+    text-align: center;
+    margin-top: 50%;
+    transform: translateY(-50%);
+}
+
+#field {
+    width: 520px;
+    height: 520px;
+    margin: 0 auto;
+    border: 1px solid #999;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+}
+
+.block {
+    width: 50px;
+    height: 50px;
+    user-select: none;
+    border: 1px solid #999;
+    cursor: pointer;
+    position: relative;
+}
+.block.new {
+    background: lightgray !important;
+    color: lightgray !important;
+}
+.block.mine {
+    background: #000;
+}
+.block.empty {
+    background: wheat;
+    font-size: 20px;
+    text-align: center;
+    line-height: 50px;
+}
+.block.crossed:after {
+    content: '\00D7';
+    display: block;
+    position: absolute;
+    color: red;
+    font-size: 89px;
+    line-height: 40px;
+}
+.block.marked:after {
+    content: '\25CB';
+    display: block;
+    color: black;
+    font-size: 70px;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
