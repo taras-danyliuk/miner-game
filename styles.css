@@ -11,6 +11,7 @@ html, body {
 .game-wrapper {
     position: relative;
 }
+
 .end-screen {
     position: absolute;
     top: 0;
@@ -63,15 +64,23 @@ html, body {
 }
 .block.crossed:after {
     content: '\00D7';
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     color: red;
     font-size: 89px;
     line-height: 40px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 .block.marked:after {
     content: '\25CB';
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: black;
     font-size: 70px;
     line-height: 50px;
@@ -79,5 +88,10 @@ html, body {
     top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     text-align: center;
+}
+
+.block.marked {
+    pointer-events: none;
 }
