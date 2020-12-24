@@ -7,26 +7,27 @@ let totalEmpty = 85,
   const DOMField = document.getElementById('field');
   const array = createArray(10, 10, 15);
 
-  //Fill game field
+  // Fill game field
   array.map((row, i) => {
     let DOMRow = document.createElement('div');
-    DOMRow.className = 'row';
+    DOMRow.classList.add('row');
 
     row.map((block, j) => {
       let DOMBlock = document.createElement('div');
-      DOMBlock.className = 'block new ';
+      DOMBlock.classList.add('block', 'new');
       DOMBlock.setAttribute('number', i + ', ' + j);
 
       if (block) {
-        DOMBlock.className += 'mine'
+        DOMBlock.classList.add('mine');
       }
       else {
-        DOMBlock.className += 'empty';
+        DOMBlock.classList.add('empty');
         DOMBlock.innerHTML = countMinesAround(array, i, j);
       }
 
       DOMBlock.addEventListener('click', blockClick);
       DOMBlock.addEventListener('contextmenu', blockRightClick);
+      DOMBlock.addEventListener('dblclick', blockDoubleClick);
 
       DOMRow.appendChild(DOMBlock);
     });
@@ -72,12 +73,12 @@ function alreadyInserted(base, arr) {
 }
 
 
-//Events function
+// Events function
 function blockClick(event) {
   showBlock(event.target);
 
-  if(event.target.className.indexOf('mine') !== -1) {
-    event.target.className += ' crossed';
+  if (event.target.classList.contains('mine')) {
+    event.target.classList.add('crossed')
 
     let DOMBlocks = document.getElementsByClassName('block');
     for (let i = 0 ; i < DOMBlocks.length; i++) {
@@ -88,15 +89,17 @@ function blockClick(event) {
   }
   else {
     let number = event.target.getAttribute('number');
-    if(clicked.indexOf(number) === -1) {
+
+    if (!clicked.includes(number)) {
       clicked.push(number);
       totalClicked++;
 
-      if(totalClicked == totalEmpty) {
+      // You won
+      if (totalClicked === totalEmpty) {
         document.getElementsByClassName('win')[0].className = 'end-screen win';
       }
 
-      if(event.target.innerHTML == '') {
+      if (event.target.innerHTML === '') {
         showAllEmptyZeros(event.target);
       }
     }
@@ -114,25 +117,44 @@ function blockRightClick(event) {
   event.target.className = className;
 }
 
-function showBlock(element) {
-  let className = element.className;
+function blockDoubleClick(event) {
+  const element = event.target;
 
-  let index = className.indexOf(' new');
-  if (index !== -1) {
-    className = className.substring(0, index) + className.substring(index + 4);
+  const [i, j] = element.getAttribute('number').split(', ').map(i => +i);
+  let notMarkedCounter = 0;
+
+  const check = el => {
+    if (el.classList.contains('new') && !el.classList.contains('marked')) el.click();
   }
 
-  index = className.indexOf(' marked');
-  if (index !== -1) {
-    className = className.substring(0, index) + className.substring(index + 7);
+  // x - 1
+  if (i !== 0) {
+    if (j !== 0) check(document.querySelector(`[number="${i - 1}, ${j - 1}"]`))
+    check(document.querySelector(`[number="${i - 1}, ${j}"]`));
+    if (j !== 9) check(document.querySelector(`[number="${i - 1}, ${j + 1}"]`))
   }
 
+  // x + 1
+  if (i !== 9) {
+    if (j !== 0) check(document.querySelector(`[number="${i + 1}, ${j - 1}"]`))
+    check(document.querySelector(`[number="${i + 1}, ${j}"]`));
+    if (j !== 9) check(document.querySelector(`[number="${i + 1}, ${j + 1}"]`))
+  }
 
-  element.className = className;
+  // y - 1
+  if (j !== 0) check(document.querySelector(`[number="${i}, ${j - 1}"]`))
+  if (j !== 9) check(document.querySelector(`[number="${i}, ${j + 1}"]`))
+
+  return notMarkedCounter === 0;
 }
 
 
-//Helpers functions
+// Helpers functions
+function showBlock(element) {
+  if (element.classList.contains('new')) element.classList.remove('new');
+  if (element.classList.contains('marked')) element.classList.remove('marked');
+}
+
 function countMinesAround(array, i, j) {
   let number = 0,
       isFirstRow = false,
